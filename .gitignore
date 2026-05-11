@@ -1,2 +1,8 @@
 .idea/
 .venv/
+# --- Ignorer les fichiers de compilation du projet Mobile (.NET MAUI) ---
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+.vs/
