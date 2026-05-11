@@ -9,7 +9,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
-from api.database.db import Base
+from backend.api.database.db import Base
 
 
 class UserRole(str, Enum):
