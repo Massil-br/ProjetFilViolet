@@ -14,7 +14,7 @@ from backend.api.database.db import Base
 class Friend(Base):
     __tablename__ = "friends"
     user_id : Mapped[int] = mapped_column(
-        ForeignKey("users.id", primary_key=True)
+        ForeignKey("users.id"),primary_key=True
     )
     friend_id : Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
     created_at: Mapped[datetime] = mapped_column(default=func.now)
