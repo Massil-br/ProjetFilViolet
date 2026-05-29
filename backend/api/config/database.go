@@ -5,7 +5,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/Massil-br/GlobalWebsite/backend/models"
+	"ProjetFilViolet/backend/api/models"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -28,7 +29,6 @@ func InitDatabase() {
 	}
 	db.AutoMigrate(
 		&models.User{},
-	
 	)
 	DB = db
 	log.Println("✅ Connected to the database")

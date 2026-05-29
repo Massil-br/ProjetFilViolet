@@ -6,18 +6,14 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Massil-br/GlobalWebsite/backend/config"
-	"github.com/Massil-br/GlobalWebsite/backend/models"
-	"github.com/golang-jwt/jwt"
+	"ProjetFilViolet/backend/api/config"
+	"ProjetFilViolet/backend/api/models"
+
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 )
 
-var roleHierarchy = map[string]int{
-	"user":  1,
-	"admin": 2,
-}
-
-func AuthMiddleware(minRole string) echo.MiddlewareFunc {
+func AuthMiddleware(minRole models.Role) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			// Authentification (JWT)
@@ -28,8 +24,7 @@ func AuthMiddleware(minRole string) echo.MiddlewareFunc {
 
 			tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
 			secret := os.Getenv("JWT_SECRET")
-
-			token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+			token, err := jwt.ParseWithClaims(tokenStr, jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, fmt.Errorf("unexpected signing method")
 				}
@@ -55,13 +50,8 @@ func AuthMiddleware(minRole string) echo.MiddlewareFunc {
 				return echo.NewHTTPError(http.StatusUnauthorized, "User not found")
 			}
 
-			// Autorisation (rôle)
-			userLevel, okUser := roleHierarchy[user.Role]
-			minLevel, okMin := roleHierarchy[minRole]
-			if !okUser || !okMin {
-				return echo.ErrForbidden
-			}
-			if userLevel < minLevel {
+			// Autorisation (rôle) — comparaison numérique basée sur models.Role
+			if user.Role < minRole {
 				return echo.ErrForbidden
 			}
 

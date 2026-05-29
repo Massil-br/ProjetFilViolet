@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/Massil-br/GlobalWebsite/backend/config"
-	"github.com/Massil-br/GlobalWebsite/backend/routes"
+	"ProjetFilViolet/backend/api/config"
+	"ProjetFilViolet/backend/api/routes"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -21,6 +22,7 @@ func main() {
 	}))
 
 	routes.InitRoutes(e)
+	routes.InitAuthRoutes(e)
 
 	e.Logger.Fatal(e.Start(":8081"))
 
