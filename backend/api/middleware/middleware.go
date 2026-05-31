@@ -45,9 +45,14 @@ func AuthMiddleware(minRole models.Role) echo.MiddlewareFunc {
 			}
 			userID := uint(userIDFloat)
 
-			var user models.User
-			if err := config.DB.First(&user, userID).Error; err != nil {
+			user := &models.User{}
+			if err := config.DB.First(user, userID).Error; err != nil {
 				return echo.NewHTTPError(http.StatusUnauthorized, "User not found")
+			}
+
+			// Vérifier que l'utilisateur est connecté
+			if !user.IsConnected {
+				return echo.NewHTTPError(http.StatusUnauthorized, "User is logged out")
 			}
 
 			// Autorisation (rôle) — comparaison numérique basée sur models.Role
@@ -55,7 +60,7 @@ func AuthMiddleware(minRole models.Role) echo.MiddlewareFunc {
 				return echo.ErrForbidden
 			}
 
-			c.Set("user", &user)
+			c.Set("user", user)
 
 			return next(c)
 		}
