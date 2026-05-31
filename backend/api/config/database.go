@@ -29,6 +29,11 @@ func InitDatabase() {
 	}
 	db.AutoMigrate(
 		&models.User{},
+		&models.Saloon{},
+		&models.Table{},
+		&models.Player{},
+		&models.TchatMessage{},
+		&models.Friend{},
 	)
 	DB = db
 	log.Println("✅ Connected to the database")

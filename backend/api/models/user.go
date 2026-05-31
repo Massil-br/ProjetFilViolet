@@ -37,8 +37,8 @@ type User struct {
 	Email       string       `json:"email" gorm:"unique"`
 	Password    string       `json:"password"`
 	IsVerified  bool         `json:"is_verified"`
-	Status      PlayerStatus `json:"status"`
+	Status      PlayerStatus `json:"status" gorm:"type:VARCHAR(255);default:MainMenu"`
 	IsConnected bool         `json:"is_connected"`
 	Money       uint64       `json:"money"`
-	Role        Role         `json:"role"`
+	Role        Role         `json:"role" gorm:"type:VARCHAR(255);default:user"`
 }
