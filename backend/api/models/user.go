@@ -26,6 +26,7 @@ type Role int
 const (
 	UserRole Role = iota
 	Moderator
+	Server
 	Admin
 )
 
