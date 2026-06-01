@@ -2,16 +2,13 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"ProjetFilViolet/backend/api/models"
 	"ProjetFilViolet/backend/api/services"
 
 	"github.com/labstack/echo/v4"
 )
-
-type FriendByIdRequest struct {
-	FriendID uint `json:"friend_id"`
-}
 
 func GetFriends(c echo.Context) error {
 	user := c.Get("user").(*models.User)
@@ -24,11 +21,13 @@ func GetFriends(c echo.Context) error {
 
 func AddFriendById(c echo.Context) error {
 	user := c.Get("user").(*models.User)
-	var req FriendByIdRequest
-	if err := c.Bind(&req); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request body")
+	friendIDStr , err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid friend ID")
 	}
-	err := services.AddFriend(user.ID, req.FriendID)
+	friendID := uint(friendIDStr)
+
+	err = services.AddFriend(user.ID, friendID)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to add friend")
 	}
@@ -37,18 +36,12 @@ func AddFriendById(c echo.Context) error {
 	})
 }
 
-
-type AddFriendByNameRequest struct {
-	FriendName string `json:"friend_name"`
-}
-
-func AddFriendByName(c echo.Context) error{
+func AddFriendByName(c echo.Context) error {
 	user := c.Get("user").(*models.User)
-	var req AddFriendByNameRequest
-	if err := c.Bind(&req); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request body")
-	}
-	friend, err := services.GetUserByName(req.FriendName)
+	var FriendName string
+	FriendName = c.Param("name")
+
+	friend, err := services.GetUserByName(FriendName)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, "Friend not found")
 	}
@@ -63,16 +56,18 @@ func AddFriendByName(c echo.Context) error{
 
 func RemoveFriend(c echo.Context) error {
 	user := c.Get("user").(*models.User)
-	var req FriendByIdRequest
-	if err := c.Bind(&req); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request body")
-	}	
-	err := services.RemoveFriend(user.ID, req.FriendID)	
+	friendIDStr , err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid friend ID")
+	}
+	friendID := uint(friendIDStr)
+
+
+	err = services.RemoveFriend(user.ID, friendID)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to remove friend")
-	}	
+	}
 	return c.JSON(http.StatusOK, echo.Map{
 		"message": "Friend removed successfully",
 	})
 }
-	

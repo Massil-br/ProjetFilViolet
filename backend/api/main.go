@@ -23,6 +23,9 @@ func main() {
 
 	routes.InitRoutes(e)
 	routes.InitAuthRoutes(e)
+	routes.InitUserRoutes(e)
+	routes.InitFriendRoutes(e)
+	routes.InitSaloonRoutes(e)
 
 	e.Logger.Fatal(e.Start(":8081"))
 

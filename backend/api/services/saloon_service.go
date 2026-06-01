@@ -5,18 +5,34 @@ import (
 	"ProjetFilViolet/backend/api/models"
 )
 
-func CreateSaloon(saloon *models.Saloon) error {
-	if err := config.DB.Create(saloon).Error; err != nil {
-		return err
+func CreateSaloon(name string, playerCount uint64, minBet uint64, maxBet uint64) (*models.Saloon, error) {
+	saloon := &models.Saloon{
+		Name:        name,
+		PlayerCount: playerCount,
+		MinBet:      minBet,
+		MaxBet:      maxBet,
 	}
-	return nil
+	if err := config.DB.Create(saloon).Error; err != nil {
+		return nil, err
+	}
+	return saloon, nil
 }
 
-func UpdateSaloon(saloon *models.Saloon) error {
-	if err := config.DB.Save(saloon).Error; err != nil {
-		return err
+
+func UpdateSaloon(Id uint, Name string, PlayerCount uint64, MinBet uint64, MaxBet uint64) (*models.Saloon, error) {
+	saloon,err  := GetSaloonByID(Id)
+	if err != nil {
+		return nil, err
 	}
-	return nil
+	
+	saloon.Name = Name
+	saloon.PlayerCount = PlayerCount
+	saloon.MinBet = MinBet
+	saloon.MaxBet = MaxBet
+	if err := config.DB.Save(saloon).Error; err != nil {
+		return nil, err
+	}
+	return saloon, nil
 }
 
 
