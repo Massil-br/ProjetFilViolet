@@ -102,3 +102,11 @@ func GetUserByEmail(email string) (*models.User, error) {
 	return &user, nil
 }
 
+func GetUserByName(name string) (*models.User, error) {
+	var user models.User
+	if err := config.DB.Where("nick_name = ?", name).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
