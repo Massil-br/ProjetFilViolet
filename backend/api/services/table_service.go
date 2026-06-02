@@ -18,6 +18,17 @@ func CreateTable(saloonID uint, slotsAvailable uint64) (*models.Table, error) {
 	return table, nil
 }
 
+func CreateTableDefaultSlots(saloonID uint) (*models.Table, error) {
+	table := &models.Table{
+		SaloonID:       saloonID,
+		SlotsAvailable: config.DefaultSlotsAvailable,
+	}
+	if err := config.DB.Create(table).Error; err != nil {
+		return nil, err
+	}
+	return table, nil
+}
+
 func UpdateTable(table *models.Table) (*models.Table, error) {
 	if err := config.DB.Save(table).Error; err != nil {
 		return nil, err
