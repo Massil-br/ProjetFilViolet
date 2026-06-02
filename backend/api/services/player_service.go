@@ -7,11 +7,19 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreatePlayer(player *models.Player) error {
-	if err := config.DB.Create(player).Error; err != nil {
-		return err
+
+
+func CreatePlayer(userID uint, initialBet uint64, TableID uint) (*models.Player, error) {
+	player := &models.Player{
+		UserID: userID,
+		InitialBet: initialBet,
+		TableID: TableID,
+		Money: initialBet,
 	}
-	return nil
+	if err := config.DB.Create(player).Error; err != nil {
+		return nil, err
+	}
+	return player, nil
 }
 
 func GetPlayerByID(id uint) (*models.Player, error) {
@@ -49,49 +57,64 @@ func DeletePlayerByID(id uint) error {
 	return nil
 }
 
-func UpdatePlayer(player *models.Player) error {
+func UpdatePlayer(player *models.Player) (*models.Player, error) {
 	if err := config.DB.Save(player).Error; err != nil {
-		return err
-	}	
-	return nil
+		return nil, err
+	}
+	return player, nil
+}
+
+func SetPlayerMoney(playerID uint, money uint64) (*models.Player, error) {
+	var player models.Player
+	if err := config.DB.First(&player, playerID).Error; err != nil {
+		return nil, err
+	}
+	player.Money = money
+	if err := config.DB.Save(&player).Error; err != nil {
+		return nil, err
+	}
+	return &player, nil
 }
 
 
-func SetPlayerInitialBet(playerID uint, bet uint64) error {
+
+func SetPlayerInitialBet(playerID uint, bet uint64) (*models.Player, error) {
 	var player models.Player
 	if err := config.DB.First(&player, playerID).Error; err != nil {
-		return err
+		return nil, err
 	}	
 	player.InitialBet = bet
 	if err := config.DB.Save(&player).Error; err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return &player, nil
 }
 
-func AddMoneyToPlayer(playerID uint, amount uint64) error {
+func AddMoneyToPlayer(playerID uint, amount uint64) (*models.Player, error) {
 	var player models.Player	
 	if err := config.DB.First(&player, playerID).Error; err != nil {
-		return err
+		return nil, err
 	}	
 	player.Money += amount
 	if err := config.DB.Save(&player).Error; err != nil {
-		return err
+		return nil,	 err
 	}
-	return nil
+	return &player, nil
 }
 
-func RemoveMoneyFromPlayer(playerID uint, amount uint64) error{
+func RemoveMoneyFromPlayer(playerID uint, amount uint64) (*models.Player, error) {
 	var player models.Player
 	if err := config.DB.First(&player, playerID).Error; err != nil {
-		return err	
+		return nil, err
 	}
 	if player.Money < amount {
-		return gorm.ErrInvalidData
+		return nil, gorm.ErrInvalidData
 	}
 	player.Money -= amount
 	if err := config.DB.Save(&player).Error; err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return &player, nil
 }
+
+

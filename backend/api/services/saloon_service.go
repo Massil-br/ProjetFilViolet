@@ -3,6 +3,7 @@ package services
 import (
 	"ProjetFilViolet/backend/api/config"
 	"ProjetFilViolet/backend/api/models"
+	"errors"
 )
 
 func CreateSaloon(name string, playerCount uint64, minBet uint64, maxBet uint64) (*models.Saloon, error) {
@@ -25,6 +26,10 @@ func UpdateSaloon(Id uint, Name string, PlayerCount uint64, MinBet uint64, MaxBe
 		return nil, err
 	}
 	
+	if MaxBet < MinBet {
+		return nil, errors.New("Max bet must be higher than Min bet")
+	}
+
 	saloon.Name = Name
 	saloon.PlayerCount = PlayerCount
 	saloon.MinBet = MinBet

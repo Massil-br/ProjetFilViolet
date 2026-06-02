@@ -7,22 +7,22 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateTable(saloonID uint, slotsAvailable uint64) error {
+func CreateTable(saloonID uint, slotsAvailable uint64) (*models.Table, error) {
 	table := &models.Table{
 		SaloonID:       saloonID,
 		SlotsAvailable: slotsAvailable,
 	}
 	if err := config.DB.Create(table).Error; err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return table, nil
 }
 
-func UpdateTable(table *models.Table) error {
+func UpdateTable(table *models.Table) (*models.Table, error) {
 	if err := config.DB.Save(table).Error; err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return table, nil
 }
 
 func GetTableByID(id uint) (*models.Table, error) {
