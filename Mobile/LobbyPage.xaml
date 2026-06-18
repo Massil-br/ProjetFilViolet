@@ -13,6 +13,7 @@
                HorizontalOptions="Center" />
 
         <Button Text="REJOINDRE UNE TABLE"
+                Clicked="OnJoinTableClicked"
                 BackgroundColor="#2E8B57"
                 TextColor="White"
                 FontAttributes="Bold"

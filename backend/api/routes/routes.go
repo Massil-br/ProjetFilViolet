@@ -11,6 +11,7 @@ import (
 func InitRoutes(e *echo.Echo) {
 	InitGetRoutes(e)
 	InitDeleteRoutes(e)
+	InitGameRoutes(e)
 }
 
 func InitGetRoutes(e *echo.Echo) {
@@ -24,8 +25,6 @@ func InitGetRoutes(e *echo.Echo) {
 	)
 
 }
-
-
 
 func InitDeleteRoutes(e *echo.Echo) {
 	e.DELETE("/api/users/:id", controllers.DeleteUserById)

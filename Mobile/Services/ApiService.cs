@@ -1,5 +1,7 @@
 using System.Net.Http.Json;
 using Mobile.Models;
+using System.Net.Http.Headers;
+
 
 namespace Mobile.Services;
 
@@ -57,6 +59,35 @@ public class ApiService
             string errorContent = await response.Content.ReadAsStringAsync();
             throw new Exception($"Le serveur a répondu avec le code {response.StatusCode} :\n{errorContent}");
         }
+    }
+
+    private async Task SetAuthorizationHeader()
+{
+    var token = await SecureStorage.Default.GetAsync("auth_token");
+    if (!string.IsNullOrEmpty(token))
+    {
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+    }
+}
+
+// Exemple pour récupérer un salon par son ID (basé sur ton InitSaloonRoutes)
+public async Task<Saloon?> GetSaloonAsync(uint saloonId)
+{
+    await SetAuthorizationHeader();
+    try
+    {
+        var response = await _httpClient.GetAsync($"{_baseUrl}/saloons/{saloonId}");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<Saloon>();
+        }
+        return null;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Erreur GetSaloon : {ex.Message}");
+        return null;
+    }
 }
 
 }
