@@ -8,3 +8,5 @@
 .vs/
 
 .env
+
+frontendWeb/node_modules/
