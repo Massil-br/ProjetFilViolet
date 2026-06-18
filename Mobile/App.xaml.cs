@@ -1,7 +1,9 @@
-﻿namespace Mobile;
+namespace Mobile;
 
 public partial class App : Application
 {
+    public static string? CurrentAuthToken { get; set; }
+
     public App()
     {
         InitializeComponent();
@@ -20,13 +22,12 @@ public partial class App : Application
 
     private async void CheckUserLoginAsync(Window window)
     {
-        var token = await SecureStorage.Default.GetAsync("auth_token");
-
-        if (!string.IsNullOrEmpty(token))
-        {
-            // Si le joueur a un token, on remplace la page par le Lobby
-            window.Page = new NavigationPage(new LobbyPage());
-        }
+        // On désactive l'auto-login via SecureStorage pour permettre de tester avec plusieurs instances locales
+        // var token = await SecureStorage.Default.GetAsync("auth_token");
+        // if (!string.IsNullOrEmpty(token))
+        // {
+        //     window.Page = new NavigationPage(new LobbyPage());
+        // }
     }
 }
 

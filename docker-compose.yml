@@ -74,7 +74,6 @@ services:
       DB_NAME: filviolet
       DB_PORT: 5432
       DB_SSLMODE: disable
-      JWT_SECRET: ${JWT_SECRET:-supersecretjwtkey12345}
 
 volumes:
   postgres_data:

@@ -3,80 +3,206 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Mobile.GamePage"
              Title="Table de Poker"
-             BackgroundColor="#16181C"> <!-- Fond sombre -->
+             BackgroundColor="#0D1117">
 
-    <Grid RowDefinitions="Auto, *, Auto" Padding="15">
-        
-        <!-- EN-TÊTE : Bouton Quitter et Infos de la table -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto">
-            <Button Grid.Column="0" 
-                    Text="QUITTER" 
-                    Clicked="OnLeaveClicked" 
-                    BackgroundColor="Transparent" 
-                    TextColor="#E53935" 
-                    FontAttributes="Bold"/>
-                    
-            <Label Grid.Column="1" 
-                   Text="TABLE 1" 
-                   TextColor="White" 
-                   FontSize="20" 
-                   FontAttributes="Bold" 
-                   HorizontalOptions="Center" 
-                   VerticalOptions="Center"/>
+    <Grid RowDefinitions="Auto, *, Auto, Auto" Padding="8,4,8,4">
+
+        <!-- ===== EN-TÊTE ===== -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Padding="0,4,0,4">
+            <Button Grid.Column="0" Text="✕ QUITTER" Clicked="OnLeaveClicked"
+                    BackgroundColor="Transparent" TextColor="#E53935" FontAttributes="Bold" FontSize="13" Padding="4,0"/>
+            <StackLayout Grid.Column="1" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
+                <Label Text="♠" TextColor="#9E9E9E" FontSize="14"/>
+                <Label Text="TABLE 1" TextColor="White" FontSize="17" FontAttributes="Bold" VerticalOptions="Center"/>
+                <Label Text="♥" TextColor="#9E9E9E" FontSize="14"/>
+            </StackLayout>
+            <Button Grid.Column="2" Text="▶ LANCER" Clicked="OnStartGameClicked"
+                    BackgroundColor="Transparent" TextColor="#4CAF50" FontAttributes="Bold" FontSize="13" Padding="4,0"/>
         </Grid>
 
-        <!-- LA TABLE DE POKER -->
-        <Border Grid.Row="1" 
-                BackgroundColor="#2E8B57" 
-                Stroke="#1B5E20" 
-                StrokeThickness="8" 
-                Margin="10,40,10,40">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="100" />
-            </Border.StrokeShape>
-            
-            <Grid>
-                <Label x:Name="StatusLabel"
-                Text="En attente de joueurs..." 
-                TextColor="White" 
-                Opacity="0.7"
-                HorizontalOptions="Center" 
-                VerticalOptions="Start" 
-                Margin="0,40,0,0"/>
+        <!-- ===== LA TABLE DE POKER ===== -->
+        <Grid Grid.Row="1" RowDefinitions="Auto, *, Auto, Auto">
 
+            <!-- Message d'action (tout en haut) -->
+            <Label Grid.Row="0" x:Name="ActionMessageLabel" Text="En attente de joueurs..."
+                   TextColor="#64B5F6" FontAttributes="Italic" FontSize="13"
+                   HorizontalOptions="Center" Margin="0,2,0,2"/>
 
-                <!-- Emplacement des cartes au centre (Le Board) -->
-                <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
-                    <Frame BackgroundColor="White" WidthRequest="50" HeightRequest="75" CornerRadius="5" Padding="0"/>
-                    <Frame BackgroundColor="White" WidthRequest="50" HeightRequest="75" CornerRadius="5" Padding="0"/>
-                    <Frame BackgroundColor="White" WidthRequest="50" HeightRequest="75" CornerRadius="5" Padding="0"/>
-                </HorizontalStackLayout>
-            </Grid>
-        </Border>
+            <!-- Tapis de poker -->
+            <Border Grid.Row="1" BackgroundColor="#1A6B3A" Stroke="#0D4A25" StrokeThickness="6" Margin="0,4,0,4">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="30"/>
+                </Border.StrokeShape>
+                <Grid RowDefinitions="*, Auto, *" Padding="8">
 
-        <!-- BOUTONS D'ACTION (En bas) -->
-        <Grid Grid.Row="2" ColumnDefinitions="*, *, *" ColumnSpacing="10" Margin="0,0,0,20">
-            <Button Grid.Column="0" 
-                    Text="SE COUCHER" 
-                    BackgroundColor="#424242" 
-                    TextColor="White" 
-                    CornerRadius="25" 
-                    HeightRequest="50"/>
-                    
-            <Button Grid.Column="1" 
-                    Text="SUIVRE" 
-                    BackgroundColor="#2E8B57" 
-                    TextColor="White" 
-                    CornerRadius="25" 
-                    HeightRequest="50"/>
-                    
-            <Button Grid.Column="2" 
-                    Text="RELANCER" 
-                    BackgroundColor="#1E88E5" 
-                    TextColor="White" 
-                    CornerRadius="25" 
-                    HeightRequest="50"/>
+                    <!-- === ADVERSAIRES (haut) === -->
+                    <FlexLayout Grid.Row="0" x:Name="OpponentsLayout"
+                                Wrap="Wrap" JustifyContent="SpaceEvenly" AlignItems="Start" Padding="4">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Border BackgroundColor="{Binding BackgroundColor}"
+                                        Stroke="{Binding BorderColor}" StrokeThickness="2"
+                                        Margin="4" Padding="8,6" Opacity="{Binding Opacity}">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10"/>
+                                    </Border.StrokeShape>
+                                    <StackLayout Spacing="3" MinimumWidthRequest="90">
+                                        <Label Text="{Binding NameAndRole}" FontAttributes="Bold" TextColor="White"
+                                               HorizontalOptions="Center" FontSize="13"/>
+                                        <Label Text="{Binding ChipsText}" TextColor="#FFD700"
+                                               HorizontalOptions="Center" FontSize="11"/>
+                                        <Label Text="{Binding CurrentBetText}" TextColor="#69F0AE"
+                                               HorizontalOptions="Center" FontSize="11" IsVisible="{Binding HasBet}"/>
+                                        <!-- Dos de cartes adversaire -->
+                                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="4"
+                                                               BindableLayout.ItemsSource="{Binding HoleCards}">
+                                            <BindableLayout.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BackgroundColor="White" Padding="0"
+                                                            StrokeThickness="1" Stroke="Black"
+                                                            WidthRequest="28" HeightRequest="40">
+                                                        <Border.StrokeShape>
+                                                            <RoundRectangle CornerRadius="4"/>
+                                                        </Border.StrokeShape>
+                                                        <Label Text="{Binding Display}" TextColor="{Binding Color}"
+                                                               FontAttributes="Bold" FontSize="15"
+                                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </BindableLayout.ItemTemplate>
+                                        </HorizontalStackLayout>
+                                    </StackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
+
+                    <!-- === CENTRE : POT + CARTES COMMUNES === -->
+                    <StackLayout Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center"
+                                 Spacing="6" Padding="12,10">
+                        <!-- Fond arrondi avec effet -->
+                        <Border BackgroundColor="#0D3D1F" Padding="12,8" HorizontalOptions="Center">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="20"/>
+                            </Border.StrokeShape>
+                            <StackLayout Spacing="4">
+                                <Label x:Name="PotLabel" Text="POT: 0" TextColor="#FFD700"
+                                       FontSize="17" FontAttributes="Bold" HorizontalOptions="Center"/>
+                                <Label x:Name="StageLabel" Text="—" TextColor="#BDBDBD"
+                                       FontSize="12" HorizontalOptions="Center"/>
+                                <!-- Cartes communes -->
+                                <HorizontalStackLayout x:Name="CommunityCardsLayout" Spacing="6"
+                                                       HorizontalOptions="Center" Margin="0,4,0,0">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BackgroundColor="White" Padding="0"
+                                                    StrokeThickness="1" Stroke="#333"
+                                                    WidthRequest="42" HeightRequest="60">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="6"/>
+                                                </Border.StrokeShape>
+                                                <Label Text="{Binding Display}" TextColor="{Binding Color}"
+                                                       FontSize="20" FontAttributes="Bold"
+                                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </HorizontalStackLayout>
+                            </StackLayout>
+                        </Border>
+                    </StackLayout>
+
+                    <!-- === MES CARTES (bas de la table) === -->
+                    <StackLayout Grid.Row="2" HorizontalOptions="Center" VerticalOptions="End"
+                                 Spacing="4" Padding="0,4,0,0">
+                        <!-- Mon identité -->
+                        <Border x:Name="MyPlayerBadge" BackgroundColor="#1A3A5C"
+                                Stroke="Transparent" StrokeThickness="2" Padding="10,6" HorizontalOptions="Center">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10"/>
+                            </Border.StrokeShape>
+                            <StackLayout Spacing="2">
+                                <Label x:Name="MyNameLabel" Text="Moi" FontAttributes="Bold"
+                                       TextColor="White" HorizontalOptions="Center" FontSize="14"/>
+                                <Label x:Name="MyChipsLabel" Text="Jetons: —" TextColor="#FFD700"
+                                       HorizontalOptions="Center" FontSize="12"/>
+                                <Label x:Name="MyBetLabel" Text="" TextColor="#69F0AE"
+                                       HorizontalOptions="Center" FontSize="12" IsVisible="False"/>
+                            </StackLayout>
+                        </Border>
+                        <!-- Mes 2 cartes -->
+                        <HorizontalStackLayout x:Name="MyCardsLayout" HorizontalOptions="Center" Spacing="10">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="White" Padding="0"
+                                            StrokeThickness="1.5" Stroke="#333"
+                                            WidthRequest="52" HeightRequest="75">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="7"/>
+                                        </Border.StrokeShape>
+                                        <Label Text="{Binding Display}" TextColor="{Binding Color}"
+                                               FontAttributes="Bold" FontSize="24"
+                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </HorizontalStackLayout>
+                    </StackLayout>
+
+                </Grid>
+            </Border>
+
+            <!-- Infos de tour -->
+            <StackLayout Grid.Row="2" Orientation="Horizontal" HorizontalOptions="Center"
+                         Spacing="16" Margin="0,2,0,2">
+                <Label x:Name="MyTurnLabel" Text="🎯 C'est à votre tour !" TextColor="Orange"
+                       FontAttributes="Bold" FontSize="14" IsVisible="False" VerticalOptions="Center"/>
+                <Label x:Name="MinRaiseLabel" Text="" TextColor="#9E9E9E"
+                       FontSize="12" VerticalOptions="Center"/>
+                <Label x:Name="TimerLabel" Text="" TextColor="#EF5350"
+                       FontAttributes="Bold" FontSize="13" IsVisible="False" VerticalOptions="Center"/>
+            </StackLayout>
+
+            <!-- Zone de mise Relancer -->
+            <Border Grid.Row="3" x:Name="RaisePanel" IsVisible="False"
+                    BackgroundColor="#1A1F2E" Padding="10,6" Margin="0,2,0,2">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12"/>
+                </Border.StrokeShape>
+                <Grid ColumnDefinitions="Auto, *, Auto, Auto" ColumnSpacing="8" VerticalOptions="Center">
+                    <Label Grid.Column="0" Text="Mise :" TextColor="White" FontSize="14" VerticalOptions="Center"/>
+                    <Entry Grid.Column="1" x:Name="RaiseEntry" Keyboard="Numeric"
+                           Placeholder="Montant..." PlaceholderColor="#555"
+                           TextColor="White" BackgroundColor="#252C3D"
+                           FontSize="14" VerticalOptions="Center"/>
+                    <Button Grid.Column="2" Text="-" FontSize="16" FontAttributes="Bold"
+                            BackgroundColor="#37474F" TextColor="White" CornerRadius="8"
+                            WidthRequest="36" HeightRequest="36" Clicked="OnRaiseDecrement" Padding="0"/>
+                    <Button Grid.Column="3" Text="+" FontSize="16" FontAttributes="Bold"
+                            BackgroundColor="#37474F" TextColor="White" CornerRadius="8"
+                            WidthRequest="36" HeightRequest="36" Clicked="OnRaiseIncrement" Padding="0"/>
+                </Grid>
+            </Border>
+
         </Grid>
+
+        <!-- ===== BOUTONS D'ACTION ===== -->
+        <Grid Grid.Row="2" ColumnDefinitions="*, *, *" ColumnSpacing="8" Margin="0,2,0,4">
+            <Button Grid.Column="0" Text="✕ COUCHER" Clicked="OnFoldClicked"
+                    BackgroundColor="#424242" TextColor="White" CornerRadius="20"
+                    HeightRequest="46" FontSize="12" FontAttributes="Bold"/>
+            <Button Grid.Column="1" Text="✓ SUIVRE" Clicked="OnCallClicked"
+                    BackgroundColor="#2E7D32" TextColor="White" CornerRadius="20"
+                    HeightRequest="46" FontSize="12" FontAttributes="Bold"/>
+            <Button Grid.Column="2" x:Name="RaiseButton" Text="↑ RELANCER" Clicked="OnRaiseClicked"
+                    BackgroundColor="#1565C0" TextColor="White" CornerRadius="20"
+                    HeightRequest="46" FontSize="12" FontAttributes="Bold"/>
+        </Grid>
+
+        <!-- Timer de secondes -->
+        <ProgressBar Grid.Row="3" x:Name="TimerBar" Progress="1.0"
+                     ProgressColor="#FF7043" BackgroundColor="#2A2A2A"
+                     HeightRequest="4" Margin="0,0,0,2"/>
 
     </Grid>
 </ContentPage>

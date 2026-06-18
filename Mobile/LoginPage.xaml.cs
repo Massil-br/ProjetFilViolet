@@ -27,7 +27,7 @@ public partial class LoginPage : ContentPage
 
         if (!string.IsNullOrEmpty(token))
         {
-            await SecureStorage.Default.SetAsync("auth_token", token);
+            App.CurrentAuthToken = token;
             
             if (Application.Current?.Windows.Count > 0)
             {

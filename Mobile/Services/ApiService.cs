@@ -63,7 +63,7 @@ public class ApiService
 
     private async Task SetAuthorizationHeader()
 {
-    var token = await SecureStorage.Default.GetAsync("auth_token");
+    var token = App.CurrentAuthToken;
     if (!string.IsNullOrEmpty(token))
     {
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);

@@ -15,14 +15,13 @@ public partial class LobbyPage : ContentPage
     {
         try
         {
-            // 1. On se connecte
-            await _wsService.ConnectAsync();
+            // 1. On se connecte à la table 1
+            await _wsService.ConnectAsync(1);
 
-            // 2. On envoie une action "JOIN_TABLE" au Go
-            await _wsService.SendActionAsync("JOIN_TABLE", new { table_id = 1 });
+            // 2. On envoie une action "buy_in" avec 500 jetons
+            await _wsService.SendActionAsync("buy_in", 500);
 
             // 3. On navigue vers la page de la table de poker (GamePage)
-            // Au lieu de new GamePage(), on lui passe le service :
             await Navigation.PushAsync(new GamePage(_wsService));
  
         }
@@ -38,7 +37,7 @@ public partial class LobbyPage : ContentPage
     private void OnLogoutClicked(object sender, EventArgs e)
     {
         // On supprime le token pour déconnecter le joueur
-        SecureStorage.Default.Remove("auth_token");
+        App.CurrentAuthToken = null;
         
         // Nouvelle syntaxe .NET 9 pour revenir au menu de démarrage
         if (Application.Current?.Windows.Count > 0)

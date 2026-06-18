@@ -8,21 +8,22 @@ public class WebSocketService
 {
     public event Action<string>? OnMessageReceived;
     private ClientWebSocket _clientWebSocket;
-    private readonly string _wsUrl = "ws://10.0.2.2:8081/ws/game"; // Remplace par ton IP/Port (10.0.2.2 pour l'émulateur Android)
+    private readonly string _wsHost = DeviceInfo.Platform == DevicePlatform.Android ? "10.0.2.2" : "localhost";
 
     public WebSocketService()
     {
         _clientWebSocket = new ClientWebSocket();
     }
 
-    public async Task ConnectAsync()
+    public async Task ConnectAsync(int tableId)
     {
         try
         {
             // On peut envoyer le token JWT dans les headers ou dans le premier message
-            var token = await SecureStorage.Default.GetAsync("auth_token");
+            var token = App.CurrentAuthToken;
             
-            Uri serverUri = new Uri(_wsUrl);
+            string wsUrl = $"ws://{_wsHost}:8082/ws?token={token}&table_id={tableId}";
+            Uri serverUri = new Uri(wsUrl);
             await _clientWebSocket.ConnectAsync(serverUri, CancellationToken.None);
             
             Console.WriteLine("Connecté au serveur de jeu !");
@@ -36,11 +37,11 @@ public class WebSocketService
         }
     }
 
-    public async Task SendActionAsync(string action, object data)
+    public async Task SendActionAsync(string action, ulong amount = 0)
     {
         if (_clientWebSocket.State == WebSocketState.Open)
         {
-            var message = new { Action = action, Data = data };
+            var message = new { action = action, amount = amount };
             string jsonMessage = JsonSerializer.Serialize(message);
             var bytes = Encoding.UTF8.GetBytes(jsonMessage);
 
