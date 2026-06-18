@@ -1,47 +1,56 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Mobile.MainPage">
+             x:Class="Mobile.MainPage"
+             BackgroundColor="#1A1A24"> <!-- Fond bleu très sombre / gris -->
 
     <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-            <HorizontalStackLayout
-                Padding="30,0"
-                Spacing ="10">
-                <Button
-                x:Name="RegisterBtn"
-                Text="Inscription" 
-                Clicked="OnRegisterClicked"
-                HorizontalOptions="Fill" />
+        <!-- On centre tout verticalement avec un espacement de 20 entre chaque élément -->
+        <VerticalStackLayout Padding="30,0" Spacing="20" VerticalOptions="Center">
 
-                <Button
-                x:Name="LoginBtn"
-                Text="Connexion" 
-                Clicked="OnLoginClicked"
-                HorizontalOptions="Fill" />
+            <!-- Espace pour le logo de ton jeu -->
+            <!-- Tu pourras ajouter une image poker_logo.png dans le dossier Resources/Images -->
+            <Image Source="dotnet_bot.png" 
+                   HeightRequest="150"
+                   HorizontalOptions="Center" />
 
-            </HorizontalStackLayout>
-            <Image
-                Source="dotnet_bot.png"
-                HeightRequest="185"
-                Aspect="AspectFit"
-                SemanticProperties.Description="dot net bot in a hovercraft number nine" />
+            <!-- Titre du jeu -->
+            <Label Text="POKER FIL VIOLET"
+                   FontSize="36"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,10" />
 
-            <Label
-                Text="Hello, World!"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1" />
+            <!-- Sous-titre -->
+            <Label Text="Prêt à faire tapis ?"
+                   FontSize="18"
+                   TextColor="#A0A0B0"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,30" />
 
-            <Label
-                Text="Welcome to &#10;.NET Multi-platform App UI"
-                Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
+            <!-- Bouton Connexion (Style Plein - Vert Casino) -->
+            <Button Text="SE CONNECTER"
+                    Clicked="OnLoginClicked"
+                    BackgroundColor="#2E8B57" 
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    CornerRadius="25"
+                    HeightRequest="55" />
 
-            
+            <!-- Bouton Inscription (Style Contour) -->
+            <Button Text="S'INSCRIRE"
+                    Clicked="OnRegisterClicked"
+                    BackgroundColor="Transparent"
+                    BorderColor="#2E8B57"
+                    BorderWidth="2"
+                    TextColor="#2E8B57"
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    CornerRadius="25"
+                    HeightRequest="55" />
+
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>

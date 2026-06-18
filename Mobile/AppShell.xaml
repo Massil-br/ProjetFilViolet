@@ -7,8 +7,9 @@
     Title="Mobile">
 
     <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    Title="Connexion"
+    ContentTemplate="{DataTemplate local:LoginPage}"
+    Route="LoginPage" />
+
 
 </Shell>

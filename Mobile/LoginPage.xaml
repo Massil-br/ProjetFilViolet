@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Mobile.LoginPage"
+             BackgroundColor="#1A1A24"
+             Title="Connexion">
+
+    <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+        <Label Text="Bon retour !" FontSize="32" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center" />
+        
+        <Entry x:Name="EmailEntry" 
+               Placeholder="Adresse Email" 
+               Keyboard="Email" 
+               TextColor="White"
+               PlaceholderColor="#A0A0B0" />
+               
+        <Entry x:Name="PasswordEntry" 
+               Placeholder="Mot de passe" 
+               IsPassword="True" 
+               TextColor="White"
+               PlaceholderColor="#A0A0B0" />
+
+        <Button Text="SE CONNECTER"
+                Clicked="OnSubmitLoginClicked"
+                BackgroundColor="#2E8B57"
+                TextColor="White"
+                FontAttributes="Bold"
+                CornerRadius="25"
+                HeightRequest="55"
+                Margin="0,20,0,0"/>
+    </VerticalStackLayout>
+</ContentPage>
+
