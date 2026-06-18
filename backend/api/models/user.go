@@ -26,6 +26,7 @@ type Role int
 const (
 	UserRole Role = iota
 	Moderator
+	Server
 	Admin
 )
 
@@ -37,9 +38,8 @@ type User struct {
 	Email       string       `json:"email" gorm:"unique"`
 	Password    string       `json:"password"`
 	IsVerified  bool         `json:"is_verified"`
-	Status      PlayerStatus `json:"status" gorm:"default:0"` // 0 = MainMenu
+	Status      PlayerStatus `json:"status" gorm:"default:0"`
 	IsConnected bool         `json:"is_connected"`
 	Money       uint64       `json:"money"`
-	Role        Role         `json:"role" gorm:"default:0"` // 0 = UserRole
-
+	Role        Role         `json:"role" gorm:"default:0"`
 }

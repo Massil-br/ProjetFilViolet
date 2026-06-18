@@ -57,7 +57,7 @@ func CreateUser(c echo.Context) error {
 		if errors.Is(err, services.ErrFailedRemovePrevious) {
 			return c.JSON(http.StatusInternalServerError, echo.Map{"error": "failed to remove previous deleted user"})
 		}
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "could not create user"})
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "could not create user {" + err.Error() + "}"})
 	}
 
 	// mask password before returning
