@@ -263,11 +263,11 @@ func (t *Table) resetHasActedForNewRound(isPreFlop bool) {
 // PlayAction exécute l'action d'un joueur.
 func (t *Table) PlayAction(playerID uint, action string, amount uint64) error {
 	if !t.GameInProgress {
-		return fmt.Errorf("no game in progress")
+		return fmt.Errorf("aucune partie en cours")
 	}
 	currentPlayer := t.Players[t.CurrentTurnIdx]
 	if currentPlayer.ID != playerID {
-		return fmt.Errorf("it's not your turn")
+		return fmt.Errorf("ce n'est pas votre tour de jouer")
 	}
 
 	var err error
@@ -322,10 +322,10 @@ func (t *Table) FoldPlayer(playerID uint) error {
 func (t *Table) CheckPlayer(playerID uint) error {
 	p := t.getPlayerByID(playerID)
 	if p == nil {
-		return fmt.Errorf("player not found")
+		return fmt.Errorf("joueur non trouvé")
 	}
 	if p.CurrentBet != t.CurrentBet {
-		return fmt.Errorf("cannot check, must match the current bet of %d", t.CurrentBet)
+		return fmt.Errorf("impossible de checker, vous devez vous aligner sur la mise de %d (Call)", t.CurrentBet)
 	}
 	p.HasActed = true
 	t.LastActionMessage = fmt.Sprintf("%s parole (Check)", p.NickName)
@@ -335,7 +335,7 @@ func (t *Table) CheckPlayer(playerID uint) error {
 func (t *Table) CallPlayer(playerID uint) error {
 	p := t.getPlayerByID(playerID)
 	if p == nil {
-		return fmt.Errorf("player not found")
+		return fmt.Errorf("joueur non trouvé")
 	}
 	diff := t.CurrentBet - p.CurrentBet
 	if diff == 0 {
@@ -362,7 +362,7 @@ func (t *Table) CallPlayer(playerID uint) error {
 func (t *Table) RaisePlayer(playerID uint, targetBet uint64) error {
 	p := t.getPlayerByID(playerID)
 	if p == nil {
-		return fmt.Errorf("player not found")
+		return fmt.Errorf("joueur non trouvé")
 	}
 
 	// La relance doit être au moins de (CurrentBet + MinRaise)
@@ -370,13 +370,13 @@ func (t *Table) RaisePlayer(playerID uint, targetBet uint64) error {
 	if targetBet < minRequired {
 		// Si le joueur met tout son tapis mais que c'est inférieur à la relance minimum requise, on l'autorise (all-in)
 		if targetBet != p.CurrentBet+p.Chips {
-			return fmt.Errorf("raise must be at least %d (or all-in)", minRequired)
+			return fmt.Errorf("la relance doit être d'au moins %d (ou tapis/all-in)", minRequired)
 		}
 	}
 
 	diff := targetBet - p.CurrentBet
 	if p.Chips < diff {
-		return fmt.Errorf("not enough chips to raise to %d", targetBet)
+		return fmt.Errorf("pas assez de jetons pour relancer à %d", targetBet)
 	}
 
 	// Calculer la nouvelle relance minimum
@@ -568,7 +568,7 @@ func (t *Table) resolveShowdown() {
 		_ = i
 	}
 
-	t.LastActionMessage = "Showdown ! " + winnersLog
+	t.LastActionMessage = "Abattage (Showdown) ! " + winnersLog
 
 	// Gérer l'élimination des joueurs sans jetons
 	for _, p := range t.Players {

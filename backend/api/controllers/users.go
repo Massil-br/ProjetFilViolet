@@ -1,8 +1,10 @@
 package controllers
-
+ 
 import (
 	"net/http"
 
+	"ProjetFilViolet/backend/api/config"
+	"ProjetFilViolet/backend/api/models"
 	"ProjetFilViolet/backend/api/services"
 
 	"github.com/labstack/echo/v4"
@@ -44,4 +46,14 @@ func GetUserById(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to fetch user"})
 	}
 	return c.JSON(http.StatusOK, user)
+}
+
+func GetMe(c echo.Context) error {
+	user := c.Get("user").(*models.User)
+	var freshUser models.User
+	if err := config.DB.First(&freshUser, user.ID).Error; err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to refresh user profile"})
+	}
+	freshUser.Password = ""
+	return c.JSON(http.StatusOK, freshUser)
 }

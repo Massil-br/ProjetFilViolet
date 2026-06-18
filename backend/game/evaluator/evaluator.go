@@ -23,27 +23,27 @@ const (
 func (hr HandRank) String() string {
 	switch hr {
 	case HighCard:
-		return "High Card"
+		return "Carte Haute"
 	case OnePair:
-		return "One Pair"
+		return "Paire"
 	case TwoPair:
-		return "Two Pair"
+		return "Double Paire"
 	case ThreeOfAKind:
-		return "Three of a Kind"
+		return "Brelan"
 	case Straight:
-		return "Straight"
+		return "Quinte"
 	case Flush:
-		return "Flush"
+		return "Couleur"
 	case FullHouse:
-		return "Full House"
+		return "Full"
 	case FourOfAKind:
-		return "Four of a Kind"
+		return "Carré"
 	case StraightFlush:
-		return "Straight Flush"
+		return "Quinte Flush"
 	case RoyalFlush:
-		return "Royal Flush"
+		return "Quinte Flush Royale"
 	default:
-		return "Unknown"
+		return "Inconnu"
 	}
 }
 

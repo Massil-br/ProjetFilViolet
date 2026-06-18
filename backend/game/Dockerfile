@@ -25,9 +25,6 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 
 COPY --from=builder /app/backend/game/game .
-# Partager le fichier .env de l'api si besoin
-COPY --from=builder /app/backend/api/.env ./ 
-
 EXPOSE 8082
 
 CMD ["./game"]

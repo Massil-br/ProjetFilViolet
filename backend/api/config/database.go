@@ -37,5 +37,29 @@ func InitDatabase() {
 	)
 	DB = db
 	log.Println("✅ Connected to the database")
+	seedDatabase()
+}
 
+func seedDatabase() {
+	var saloonCount int64
+	DB.Model(&models.Saloon{}).Count(&saloonCount)
+	if saloonCount == 0 {
+		saloon := models.Saloon{
+			Name:        "Salon Principal",
+			MinBet:      10,
+			MaxBet:      200,
+			PlayerCount: 7,
+		}
+		if err := DB.Create(&saloon).Error; err == nil {
+			log.Printf("✅ Seeded default Saloon: %+v", saloon)
+			
+			table := models.Table{
+				SaloonID:       saloon.ID,
+				SlotsAvailable: 7,
+			}
+			if err := DB.Create(&table).Error; err == nil {
+				log.Printf("✅ Seeded default Table: %+v", table)
+			}
+		}
+	}
 }

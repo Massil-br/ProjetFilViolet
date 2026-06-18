@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"ProjetFilViolet/backend/api/services"
+	"log"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -30,6 +31,11 @@ func CreateSaloon(c echo.Context) error {
 	saloon, err := services.CreateSaloon(req.Name, req.PlayerCount, req.MinBet, req.MaxBet)
 	if err != nil {
 		return echo.NewHTTPError(500, "Failed to create saloon")
+	}
+	// Automatically create a table for this saloon
+	_, err = services.CreateTable(saloon.ID, req.PlayerCount)
+	if err != nil {
+		log.Println("⚠️ Error creating table for saloon:", err)
 	}
 	return c.JSON(201, echo.Map{"message": "Saloon created successfully", "saloon": saloon})
 }
@@ -99,4 +105,12 @@ func DeleteSaloonByName(c echo.Context) error {
 		return echo.NewHTTPError(500, "Failed to delete saloon")
 	}
 	return c.JSON(200, echo.Map{"message": "Saloon deleted successfully"})
+}
+
+func GetAllTables(c echo.Context) error {
+	tables, err := services.GetAllTables()
+	if err != nil {
+		return echo.NewHTTPError(500, "Failed to fetch tables")
+	}
+	return c.JSON(200, tables)
 }
